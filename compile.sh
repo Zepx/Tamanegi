@@ -9,11 +9,20 @@ else
 fi
 
 function reloadFirefox {
+    if [[ ! -f data ]]
+    then
+        mkdir data
+    fi
+
     sleep 1
     # echo "Reloading firefox..."
     # ./telnet.sh | telnet 10.0.2.2 4242 > /dev/null
     curl http://localhost:3000/setup
     echo -e "\nSetup done\n"
+
+    echo "Login..."
+    # curl -s -b data/cookies -c data/cookies -D "username=filip&password=pwd" http://localhost:3000/login > /dev/null
+
     questions=`curl -s http://localhost:3000/dash?user=filip`
     echo $questions
     q1=`echo $questions | sed 's/.*questions\([^,]*\).*/\1/g' | grep -o "[0-9a-z]*"`

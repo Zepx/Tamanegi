@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var db = require('../data.js');
+var db = require('../data');
+var User = require('../models/user')
+var passport = require('passport');
 
 function notSignedIn(res) {
     res.status(500).json({error: "Not signed in!"});
@@ -19,17 +21,17 @@ function signedIn(req, res) {
 
 function withUser(fn) {
     return function(req, res) {
-        if (!signedIn(req, res))
-            return;
+	if (!signedIn(req, res))
+	    return;
 
-        // Get our user...
-        var token = req.query.user;
-        db.User.findOne({name: token}, function (err, user) {
-            if (!user || err)
-                notSignedIn(res);
-            else
-                fn(user, req, res);
-        });
+	// Get our user...
+	var token = req.query.user;
+	User.findOne({username: token}, function (err, user) {
+	    if (!user || err)
+		notSignedIn(res);
+	    else
+		fn(user, req, res);
+	});
     }
 }
 
@@ -53,7 +55,7 @@ function withQuestion(fn) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
+     res.render('index', { user : req.user });
 });
 
 router.get('/groups', withUser(function(user, reg, res) {
@@ -87,7 +89,7 @@ router.get('/users', withUser(function(u, reg, res) {
     if (reg.query.group !== undefined)
         q = {_id: reg.query.group};
 
-    db.User.find(q, function(error, users) {
+    User.find(q, function(error, users) {
         var result = {};
         for (var i = 0; i < users.length; i++) {
             var user = users[i];
@@ -98,7 +100,7 @@ router.get('/users', withUser(function(u, reg, res) {
 }));
 
 router.get('/dash', withUser(function(user, req, res) {
-    user.tests(function(tests) {
+    db.testsFor(user, function(tests) {
         var r = {};
         for (test in tests) {
             t = tests[test];
@@ -136,7 +138,7 @@ router.get('/result', withTest(function(user, test, req, res) {
         q = {group_id: req.query.group};
 
     console.log(q);
-    db.User.find(q, function(error, forUsers) {
+    User.find(q, function(error, forUsers) {
         db.Question.find({_id: {$in: test.questions_id}}, function(error, questions) {
             var all = {};
 
@@ -167,7 +169,7 @@ router.get('/result', withTest(function(user, test, req, res) {
 /* Debug route, sets up a basic system for testing! */
 router.get('/setup', function(req, res) {
     db.Group.remove({}, function(err) {});
-    db.User.remove({}, function(err) {});
+    User.remove({}, function(err) {});
     db.Test.remove({}, function(err) {});
     db.Question.remove({}, function(err) {});
     
@@ -184,14 +186,51 @@ router.get('/setup', function(req, res) {
     var group = new db.Group({name: "class A", tests_id: [test.id]});
     group.save();
 
-    var user = new db.User({name: "filip", group_id: group.id});
-    user.save();
+    //var user = new User({username: 'filip', name: "filip", password: 'filip', group_id: group.id});
+    User.register(new User({ username: 'filip', name: 'Filip Stromback', group_id: group._id}), 'pwd', function(err, account) {
+        var user = User.findByUsername('filip');
 
-    q1.answers.push({text: "Answer 1", group_id: group._id, user_id: user._id});
-    q1.save();
+        q1.answers.push({text: "Answer 1", group_id: group._id, user_id: user._id});
+        q1.save();
 
-    res.send("OK");
-    console.log("Setup complete!");
+        res.send("OK");
+        console.log("Setup complete!");
+    });
+    
+    
+});
+
+router.get('/register', function(req, res) {
+    res.render('register', { });
+});
+
+router.post('/register', function(req, res) {
+    User.register(new User({ username : req.body.username }), req.body.password, function(err, account) {
+        if (err) {
+          return res.render("register", {info: "Sorry. That username already exists. Try again."});
+        }
+
+        passport.authenticate('local')(req, res, function () {
+            res.redirect('/');
+        });
+    });
+});
+
+router.get('/login', function(req, res) {
+    res.render('login', { user : req.user });
+});
+
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/');
+});
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+router.get('/ping', function(req, res){
+    res.status(200).send("pong!");
 });
 
 module.exports = router;
