@@ -15,25 +15,50 @@ var userSchema = mongoose.Schema({
     name: String,
     password: String, /* Plain-text for now... */
     teacher: Boolean, /* Teacher? Teacher may create tests and so on... */
-    groups-id: [ObjectId], /* Reference to Group objects */
+    groups_id: [ObjectId], /* Reference to Group objects */
 });
+
+
+userSchema.methods.tests = function(callback) {
+    var q = {_id: {$in: this.groups_id}};
+    e.Group.find(q, function (err, result) {
+	var tests = [];
+	for (i in result)
+	    tests = tests.concat(result[i].tests_id);
+
+	var q = {_id: {$in: tests}};
+	e.Test.find(q, function (err, result) {
+	    callback(result);
+	});
+    });
+}
+
 
 e.User = mongoose.model('User', userSchema);
 
 
 var groupSchema = mongoose.Schema({
     name: String,
-    members-id: [ObjectId],
+    tests_id : [ObjectId],
 });
 
 e.Group = mongoose.model('Group', groupSchema);
 
 var testSchema = mongoose.Schema({
     title: String,
-    questions: [ObjectId],
+    questions_id: [ObjectId],
     due: Date,
-    teacher-id: ObjectId, /* Reference to teacher */
+    teacher_id: ObjectId, /* Reference to teacher */
 });
+
+testSchema.methods.asJson = function() {
+    return {
+	title: this.title,
+	due: this.due,
+	teacher: "unknown",
+	first_question: this.questions_id[0],
+    }
+}
 
 e.Test = mongoose.model('Test', testSchema);
 
@@ -41,10 +66,12 @@ var questionSchema = mongoose.Schema({
     text: String,
     answers: [{
 	text: String,
-	group-id: ObjectId,
-	user-id: ObjectId,
+	group_id: ObjectId,
+	user_id: ObjectId,
     }],
 });
+
+e.Question = mongoose.model('Question', questionSchema);
 
 module.exports = e;
 
