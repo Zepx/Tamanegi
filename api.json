@@ -4,22 +4,9 @@
 
 
 /**
- * Log in a user. Checks the username/password. Returns the session.
- */
-POST /login
-DATA
-{ "username" : <username>, "password" : <password> }
-
-RESPONSE
-{ "status" : "ok", "token" : <token> }
-
-or
-{ "status" : "failed" }
-
-/**
  * Create a group.
  */
-POST /create?user=<token>
+POST /create
 DATA
 {
     "type" : "group",
@@ -33,7 +20,7 @@ or
 /**
  * Create a user
  */
-POST /create?user=<token>
+POST /create
 DATA
 {
     "type" : "user",
@@ -52,7 +39,7 @@ or
 /**
  * Create a test.
  */
-POST /create?user=<token>
+POST /create
 DATA
 {
     "type" : "test",
@@ -73,7 +60,7 @@ or
 /**
  * Get all groups.
  */
-GET /groups?user=<token>
+GET /groups
 RESPONSE
 {
     <group id> : <group name>,
@@ -83,7 +70,7 @@ RESPONSE
 /**
  * Get all tests
  */
-GET /tests?user=<token>
+GET /tests
 RESPONSE
 {
         <test id> : <test name>,
@@ -92,7 +79,7 @@ RESPONSE
 /**
  * Get all tests for a group
  */
-GET /tests?user=<token>&group=<group>
+GET /tests?group=<group>
 RESPONSE
 {
         <test id> : <test name>,
@@ -101,7 +88,7 @@ RESPONSE
 /**
  * Get all users
  */
-GET /users?user=<token>
+GET /users
 RESPONSE
 {
         <user id> : <user name>,
@@ -110,7 +97,7 @@ RESPONSE
 /**
  * Get all tests for a group
  */
-GET /users?user=<token>&group=<group>
+GET /users?group=<group>
 RESPONSE
 {
         <user id> : <user name>,
@@ -120,7 +107,7 @@ RESPONSE
 /**
  * Get all assignments for the current user.
  */
-GET /dash?user=<token>
+GET /dash
 RESPONSE
 {
     "<test-id>" :
@@ -138,7 +125,7 @@ RESPONSE
  * Get a question.
  * NOTE: alternatives are not present unless the user is supposed to see them!
  */
-GET /question?user=<token>&id=<question id>
+GET /question?id=<question id>
 RESPONSE
 {
     "text" : <question text>,
@@ -150,13 +137,13 @@ RESPONSE
 /**
  * Give up a question.
  */
-POST /give_up?user=<token>&id=<question id>
+POST /give_up?id=<question id>
 RESPONSE: Same as in /question
 
 /**
  * Answer a question.
  */
-POST /answer?user=<token>&id=<question id>
+POST /answer?id=<question id>
 DATA
 { "answer_text" : <your answer> }
 
@@ -164,7 +151,7 @@ DATA
 /**
  * Get the result for a user and a test.
  */
-GET /result?user=<token>&for=<user-id>&test=<test-id>
+GET /result?for=<user-id>&test=<test-id>
 RESPONSE
 {
     <user-id> : [
@@ -182,7 +169,7 @@ RESPONSE
 /**
  * Get results for an entire group.
  */
-GET /result?user=<token>&group=<group-id>&test=<test-id>
+GET /result?group=<group-id>&test=<test-id>
 RESPONSE
 {
         <user-id> : [ same as "answers" in /result above ],
