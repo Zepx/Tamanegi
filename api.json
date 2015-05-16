@@ -85,7 +85,7 @@ RESPONSE
 	"title" : <title of the test>,
 	"due" : <due-date, YYYY-MM-DD HH:MM:SS>,
 	"teacher" : <name of the teacher giving the test>,
-	"first_question" : <id of the first question>,
+	"questions" : [<id of question>, ...],
     },
 	...
 }
@@ -101,7 +101,6 @@ RESPONSE
     "text" : <question text>,
     "answer" : <the students previous answer (if any)>,
     "alternatives" : [ "alternative1", ... ],
-    "next" : <id of the next question>,
 }
 
 
@@ -117,8 +116,6 @@ RESPONSE: Same as in /question
 POST /answer?user=<token>&id=<question id>
 DATA
 { "answer_text" : <your answer> }
-or
-{ "answer_id" : <# of the selected answer> }
 
 
 /**
