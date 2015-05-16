@@ -39,6 +39,14 @@ function reloadFirefox {
     group=`curl -s "http://localhost:3000/groups?user=filip" | sed 's/.*"\([0-9a-z]*\)".*:.*/\1/g'`
     curl "http://localhost:3000/result?user=filip&for="$user"&test="$test
     curl "http://localhost:3000/result?user=filip&group="$group"&test="$test
+
+    q='[{"text":"Question #1"}, {"text":"Question #2"}, {"text":"Question #3"}]';
+    testData='{"type":"test", "title":"From JSON", "group":"'$group'", "due":"2015-05-17 18:30:00", "teacher":"'$user'", "questions":'$q'}';
+    echo $testData;
+    newTest=`curl -s -H "Content-Type: application/json" --data "$testData" "http://localhost:3000/create?user=filip"`
+    newTest=`echo $newTest | sed 's/.*id.*"\([0-9a-z]*\)".*/\1/g'`
+    curl "http://localhost:3000/dash?user=filip"
+    
     echo -e "\nDone!"
 }
 

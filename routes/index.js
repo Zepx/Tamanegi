@@ -110,6 +110,55 @@ router.get('/dash', withUser(function(user, req, res) {
     });
 }));
 
+router.post('/create', withUser(function(user, req, res) {
+    var body = req.body;
+    if (body.type == "group") {
+        createGroup(body, res)
+    } else if (body.type == "user") {
+        createUser(body, res);
+    } else if (body.type == "test") {
+        createTest(body, res);
+    } else {
+        res.json({error: "Unknown type"});
+    }
+}));
+
+function createGroup(body, res) {
+    var g = new db.Group({name: body.name});
+    g.save();
+    res.json({status: "ok", id : g._id });
+}
+
+function createUser(body, res) {
+    var p = { username: body.username, name: body.name, group_id: body.group, teacher: body.teacher};
+    User.register(new User(p), body.password, function(err, account) {
+        if (err !== undefined)
+            res.json({status: "failed"});
+        else
+            res.json({status: "ok", id: account._id });
+    });
+}
+
+function createTest(body, res) {
+    db.Group.findOne({_id: body.group}, function(error, group) {
+        var questions = [];
+        for (var i = 0; i < body.questions.length; i++) {
+            var q = body.questions[i];
+            var created = new db.Question({text: q.text, answers:[]});
+            created.save();
+            questions.push(created);
+        }
+
+        var test = new db.Test({title: body.title, questions_id: questions, due: body.due, teacher_id: body.teacher});
+        test.save();
+
+        group.tests_id.push(test._id);
+        group.save();
+
+        res.json({status: "ok", id: test._id});
+    });
+}
+
 router.get('/question', withQuestion(function(user, question, req, res) {
     res.json(question.asJson(user));
 }));

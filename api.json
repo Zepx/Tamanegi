@@ -24,10 +24,9 @@ DATA
 {
     "type" : "group",
     "name" : <name>,
-    "members" : ["id1", "id2", ...],
 }
 RESPONSE
-{ "status" : "ok" }
+{ "status" : "ok", "id" : <created id> }
 or
 { "status" : "failed" }
 
@@ -38,13 +37,16 @@ POST /create?user=<token>
 DATA
 {
     "type" : "user",
+    "username" : <username>,
     "name" : <name>,
+    "password" : <password>,
     "group" : <group id>,
+    "teacher" : true/false,
 }
 RESPONSE
-{ "status" : "ok" }
+{ "status" : "ok", "id" : <created id> }
 or
-{ "status" : "failed" }
+{ "status" : "failed"  }
 
   
 /**
@@ -54,6 +56,8 @@ POST /create?user=<token>
 DATA
 {
     "type" : "test",
+    "title" : <title>,
+    "group" : <group-id>,
     "due" : <due date and time, YYYY-MM-DD HH:MM:SS>,
     "teacher" : <teachers user id>,
     "questions" : [
@@ -61,6 +65,10 @@ DATA
 	...
     ],
 }
+RESPONSE
+{ "status" : "ok" , "id" : <created id> }
+or
+{ "status" : "failed" }
 
 /**
  * Get all groups.
