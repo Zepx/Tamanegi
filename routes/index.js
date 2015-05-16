@@ -8,8 +8,8 @@ function notSignedIn(res) {
 
 function signedIn(req, res) {
     if (!req.query.user) {
-	notSignedIn(res);
-	return false;
+        notSignedIn(res);
+        return false;
     }
 
     var token = req.query.user;
@@ -19,35 +19,35 @@ function signedIn(req, res) {
 
 function withUser(fn) {
     return function(req, res) {
-	if (!signedIn(req, res))
-	    return;
+        if (!signedIn(req, res))
+            return;
 
-	// Get our user...
-	var token = req.query.user;
-	db.User.findOne({name: token}, function (err, user) {
-	    if (!user || err)
-		notSignedIn(res);
-	    else
-		fn(user, req, res);
-	});
+        // Get our user...
+        var token = req.query.user;
+        db.User.findOne({name: token}, function (err, user) {
+            if (!user || err)
+                notSignedIn(res);
+            else
+                fn(user, req, res);
+        });
     }
 }
 
 function withTest(fn) {
     return withUser(function(user, req, res) {
-	/* Check access! */
-	db.Test.findOne({_id: req.query.test}, function(error, test) {
-	    fn(user, test, req, res);
-	})
+        /* Check access! */
+        db.Test.findOne({_id: req.query.test}, function(error, test) {
+            fn(user, test, req, res);
+        })
     });
 }
 
 function withQuestion(fn) {
     return withUser(function (user, req, res) {
-	/* Check access! */
-	db.Question.findOne({_id: req.query.id}, function(error, question) {
-	    fn(user, question, req, res);
-	});
+        /* Check access! */
+        db.Question.findOne({_id: req.query.id}, function(error, question) {
+            fn(user, question, req, res);
+        });
     });
 }
 
@@ -58,53 +58,53 @@ router.get('/', function(req, res, next) {
 
 router.get('/groups', withUser(function(user, reg, res) {
     db.Group.find({}, function(error, groups) {
-	var result = {};
-	for (var i = 0; i < groups.length; i++) {
-	    var group = groups[i];
-	    result[group._id] = group.name;
-	}
-	res.json(result);
+        var result = {};
+        for (var i = 0; i < groups.length; i++) {
+            var group = groups[i];
+            result[group._id] = group.name;
+        }
+        res.json(result);
     });
 }));
 
 router.get('/tests', withUser(function(user, reg, res) {
     var q = {};
     if (reg.query.group !== undefined)
-	q = {_id: reg.query.group};
+        q = {_id: reg.query.group};
 
     db.Test.find(q, function(error, tests) {
-	var result = {};
-	for (var i = 0; i < tests.length; i++) {
-	    var test = tests[i];
-	    result[test._id] = test.title;
-	}
-	res.json(result);
+        var result = {};
+        for (var i = 0; i < tests.length; i++) {
+            var test = tests[i];
+            result[test._id] = test.title;
+        }
+        res.json(result);
     });
 }));
 
 router.get('/users', withUser(function(u, reg, res) {
     var q = {};
     if (reg.query.group !== undefined)
-	q = {_id: reg.query.group};
+        q = {_id: reg.query.group};
 
     db.User.find(q, function(error, users) {
-	var result = {};
-	for (var i = 0; i < users.length; i++) {
-	    var user = users[i];
-	    result[user._id] = user.name;
-	}
-	res.json(result);
+        var result = {};
+        for (var i = 0; i < users.length; i++) {
+            var user = users[i];
+            result[user._id] = user.name;
+        }
+        res.json(result);
     });
 }));
 
 router.get('/dash', withUser(function(user, req, res) {
     user.tests(function(tests) {
-	var r = {};
-	for (test in tests) {
-	    t = tests[test];
-	    r[t._id] = t.asJson();
-	}
-	res.json(r);
+        var r = {};
+        for (test in tests) {
+            t = tests[test];
+            r[t._id] = t.asJson();
+        }
+        res.json(r);
     });
 }));
 
@@ -120,8 +120,8 @@ router.post('/give_up', withQuestion(function(user, question, req, res) {
 router.post('/answer', withQuestion(function(user, question, req, res) {
     var answer = req.body['answer_text'];
     if (answer === undefined) {
-	res.json({error: "No answer_text, use Content-Type: application/json!"});
-	return;
+        res.json({error: "No answer_text, use Content-Type: application/json!"});
+        return;
     }
 
     question.answer(user, answer);
@@ -131,36 +131,36 @@ router.post('/answer', withQuestion(function(user, question, req, res) {
 router.get('/result', withTest(function(user, test, req, res) {
     var q = {};
     if (req.query.for !== undefined)
-	q = {_id: req.query.for};
+        q = {_id: req.query.for};
     else if (req.query.group !== undefined)
-	q = {group_id: req.query.group};
+        q = {group_id: req.query.group};
 
     console.log(q);
     db.User.find(q, function(error, forUsers) {
-	db.Question.find({_id: {$in: test.questions_id}}, function(error, questions) {
-	    var all = {};
+        db.Question.find({_id: {$in: test.questions_id}}, function(error, questions) {
+            var all = {};
 
-	    for (var u = 0; u < forUsers.length; u++) {
-		var forUser = forUsers[u];
-		var answers = [];
+            for (var u = 0; u < forUsers.length; u++) {
+                var forUser = forUsers[u];
+                var answers = [];
 
-		for (var i = 0; i < questions.length; i++) {
-		    var q = questions[i];
-		    var a = q.answerBy(forUser);
-		    if (a !== undefined) {
-			answers.push({
-			    question_text: q.text,
-			    question_id: q._id,
-			    answer: a.text,
-			    gave_up: a.gave_up,
-			});
-		    }
-		}
+                for (var i = 0; i < questions.length; i++) {
+                    var q = questions[i];
+                    var a = q.answerBy(forUser);
+                    if (a !== undefined) {
+                        answers.push({
+                            question_text: q.text,
+                            question_id: q._id,
+                            answer: a.text,
+                            gave_up: a.gave_up,
+                        });
+                    }
+                }
 
-		all[forUser._id] = answers;
-	    }
-	    res.json(all);
-	});
+                all[forUser._id] = answers;
+            }
+            res.json(all);
+        });
     });
 }));
 
