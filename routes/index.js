@@ -3,18 +3,21 @@ var router = express.Router();
 var db = require('../data');
 var User = require('../models/user')
 var passport = require('passport');
+var util = require('util');
 
 function notSignedIn(res) {
     res.status(500).json({error: "Not signed in!"});
 }
 
 function signedIn(req, res) {
-    if (!req.query.user) {
-	notSignedIn(res);
-	return false;
-    }
+   var user = req.user;
+   
+   if(user === undefined) {
+      notSignedIn(res);
+      return false;
+   }
 
-    var token = req.query.user;
+    var token = req.user;
     // TODO: Validate token!
     return true;
 }
@@ -25,7 +28,7 @@ function withUser(fn) {
 	    return;
 
 	// Get our user...
-	var token = req.query.user;
+	var token = req.user;
 	User.findOne({name: token}, function (err, user) {
 	    if (!user || err)
 		notSignedIn(res);
@@ -44,12 +47,15 @@ function withQuestion(fn) {
     });
 }
 
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
+     console.log(util.inspect(req.session));
      res.render('index', { user : req.user });
 });
 
-router.get('/dash', withUser(function(user, req, res) {
+/*router.get('/dash', withUser(function(user, req, res) {
     user.tests(function(tests) {
 	var r = {};
 	for (test in tests) {
@@ -58,7 +64,21 @@ router.get('/dash', withUser(function(user, req, res) {
 	}
 	res.json(r);
     });
-}));
+}));*/
+
+router.get('/dash', function(req, res, next) {
+   isLoggedIn(req, res)
+   
+   var user = req.user;
+   user.tests(function(tests) {
+      var r= {};
+      for( test in tests) {
+         t = tests[test];
+         r[t._id] = t.asJson();
+      }
+      res.json(r);
+   });
+})
 
 router.get('/question', withQuestion(function(user, question, req, res) {
     res.json(question.asJson(user));
@@ -134,7 +154,8 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
-    res.redirect('/');
+   console.log("USER2: " + util.inspect(req.user));
+   res.redirect('/');
 });
 
 router.get('/logout', function(req, res) {
@@ -145,5 +166,15 @@ router.get('/logout', function(req, res) {
 router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });
+
+function isLoggedIn(req, res) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return true;
+
+    // if they aren't redirect them to the home page
+    res.redirect('/');
+}
 
 module.exports = router;
