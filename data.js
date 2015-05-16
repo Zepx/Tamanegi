@@ -100,6 +100,15 @@ questionSchema.methods.asJson = function(user) {
     };
 }
 
+questionSchema.methods.answerBy = function(user) {
+    for (var i = 0; i < this.answers.length; i++) {
+	var a = this.answers[i];
+	if (a.user_id + "" == user._id + "") {
+	    return a;
+	}
+    }
+}
+
 questionSchema.methods.giveUp = function(user) {
     for (var i = 0; i < this.answers.length; i++) {
 	var a = this.answers[i];

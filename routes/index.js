@@ -33,6 +33,15 @@ function withUser(fn) {
     }
 }
 
+function withTest(fn) {
+    return withUser(function(user, req, res) {
+	/* Check access! */
+	db.Test.findOne({_id: req.query.test}, function(error, test) {
+	    fn(user, test, req, res);
+	})
+    });
+}
+
 function withQuestion(fn) {
     return withUser(function (user, req, res) {
 	/* Check access! */
@@ -46,6 +55,47 @@ function withQuestion(fn) {
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
+
+router.get('/groups', withUser(function(user, reg, res) {
+    db.Group.find({}, function(error, groups) {
+	var result = {};
+	for (var i = 0; i < groups.length; i++) {
+	    var group = groups[i];
+	    result[group._id] = group.name;
+	}
+	res.json(result);
+    });
+}));
+
+router.get('/tests', withUser(function(user, reg, res) {
+    var q = {};
+    if (reg.query.group !== undefined)
+	q = {_id: reg.query.group};
+
+    db.Test.find(q, function(error, tests) {
+	var result = {};
+	for (var i = 0; i < tests.length; i++) {
+	    var test = tests[i];
+	    result[test._id] = test.title;
+	}
+	res.json(result);
+    });
+}));
+
+router.get('/users', withUser(function(u, reg, res) {
+    var q = {};
+    if (reg.query.group !== undefined)
+	q = {_id: reg.query.group};
+
+    db.User.find(q, function(error, users) {
+	var result = {};
+	for (var i = 0; i < users.length; i++) {
+	    var user = users[i];
+	    result[user._id] = user.name;
+	}
+	res.json(result);
+    });
+}));
 
 router.get('/dash', withUser(function(user, req, res) {
     user.tests(function(tests) {
@@ -78,6 +128,42 @@ router.post('/answer', withQuestion(function(user, question, req, res) {
     res.json(question.asJson(user));
 }));
 
+router.get('/result', withTest(function(user, test, req, res) {
+    var q = {};
+    if (req.query.for !== undefined)
+	q = {_id: req.query.for};
+    else if (req.query.group !== undefined)
+	q = {group_id: req.query.group};
+
+    console.log(q);
+    db.User.find(q, function(error, forUsers) {
+	db.Question.find({_id: {$in: test.questions_id}}, function(error, questions) {
+	    var all = {};
+
+	    for (var u = 0; u < forUsers.length; u++) {
+		var forUser = forUsers[u];
+		var answers = [];
+
+		for (var i = 0; i < questions.length; i++) {
+		    var q = questions[i];
+		    var a = q.answerBy(forUser);
+		    if (a !== undefined) {
+			answers.push({
+			    question_text: q.text,
+			    question_id: q._id,
+			    answer: a.text,
+			    gave_up: a.gave_up,
+			});
+		    }
+		}
+
+		all[forUser._id] = answers;
+	    }
+	    res.json(all);
+	});
+    });
+}));
+
 /* Debug route, sets up a basic system for testing! */
 router.get('/setup', function(req, res) {
     db.Group.remove({}, function(err) {});
@@ -95,7 +181,7 @@ router.get('/setup', function(req, res) {
     var test = new db.Test({title: "Test 1", questions_id: [q1._id, q2._id], due: "2015-05-17 19:00:00"});
     test.save();
 
-    var group = new db.Group({title: "class A", tests_id: [test.id]});
+    var group = new db.Group({name: "class A", tests_id: [test.id]});
     group.save();
 
     var user = new db.User({name: "filip", group_id: group.id});

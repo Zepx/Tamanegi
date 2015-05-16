@@ -24,6 +24,12 @@ function reloadFirefox {
     curl --data "" "http://localhost:3000/give_up?user=filip&id="$q2
     curl -H "Content-Type: application/json" --data '{"answer_text":"Answer2"}' "http://localhost:3000/answer?user=filip&id="$q1
     curl -H "Content-Type: application/json" --data '{"answer_text":"Answer3"}' "http://localhost:3000/answer?user=filip&id="$q2
+
+    test=`curl -s "http://localhost:3000/tests?user=filip" | sed 's/.*"\([0-9a-z]*\)".*:.*/\1/g'`
+    user=`curl -s "http://localhost:3000/users?user=filip" | sed 's/.*"\([0-9a-z]*\)".*:.*/\1/g'`
+    group=`curl -s "http://localhost:3000/groups?user=filip" | sed 's/.*"\([0-9a-z]*\)".*:.*/\1/g'`
+    curl "http://localhost:3000/result?user=filip&for="$user"&test="$test
+    curl "http://localhost:3000/result?user=filip&group="$group"&test="$test
     echo -e "\nDone!"
 }
 

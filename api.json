@@ -35,12 +35,47 @@ or
  * Get all groups.
  */
 GET /groups?user=<token>
-DATA
+RESPONSE
 {
     <group id> : <group name>,
     ...
 }
 
+/**
+ * Get all tests
+ */
+GET /tests?user=<token>
+RESPONSE
+{
+	<test id> : <test name>,
+}
+
+/**
+ * Get all tests for a group
+ */
+GET /tests?user=<token>&group=<group>
+RESPONSE
+{
+	<test id> : <test name>,
+}
+
+/**
+ * Get all users
+ */
+GET /users?user=<token>
+RESPONSE
+{
+	<user id> : <user name>,
+}
+
+/**
+ * Get all tests for a group
+ */
+GET /users?user=<token>&group=<group>
+RESPONSE
+{
+	<user id> : <user name>,
+}
 
 /**
  * Create a user
@@ -124,7 +159,7 @@ DATA
 GET /result?user=<token>&for=<user-id>&test=<test-id>
 RESPONSE
 {
-    "answers" : [
+    <user-id> : [
 	{
 	    "question_text" : <question text>,
 	    "question_id" : <question id>,
