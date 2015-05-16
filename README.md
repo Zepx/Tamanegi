@@ -1,2 +1,2 @@
-# tamanegi
-Homework Collaboration System
+# Tamanegi
+A Homework Collaboration System
