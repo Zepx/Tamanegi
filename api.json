@@ -32,6 +32,37 @@ or
 { "status" : "failed" }
 
 /**
+ * Create a user
+ */
+POST /create?user=<token>
+DATA
+{
+    "type" : "user",
+    "name" : <name>,
+    "group" : <group id>,
+}
+RESPONSE
+{ "status" : "ok" }
+or
+{ "status" : "failed" }
+
+  
+/**
+ * Create a test.
+ */
+POST /create?user=<token>
+DATA
+{
+    "type" : "test",
+    "due" : <due date and time, YYYY-MM-DD HH:MM:SS>,
+    "teacher" : <teachers user id>,
+    "questions" : [
+	{ "text" : <question text> },
+	...
+    ],
+}
+
+/**
  * Get all groups.
  */
 GET /groups?user=<token>
@@ -75,37 +106,6 @@ GET /users?user=<token>&group=<group>
 RESPONSE
 {
 	<user id> : <user name>,
-}
-
-/**
- * Create a user
- */
-POST /create?user=<token>
-DATA
-{
-    "type" : "user",
-    "name" : <name>,
-    "group" : <group id>,
-}
-RESPONSE
-{ "status" : "ok" }
-or
-{ "status" : "failed" }
-
-  
-/**
- * Create a test.
- */
-POST /create?user=<token>
-DATA
-{
-    "type" : "test",
-    "due" : <due date and time, YYYY-MM-DD HH:MM:SS>,
-    "teacher" : <teachers user id>,
-    "questions" : [
-	{ "text" : <question text> },
-	...
-    ],
 }
 
 
