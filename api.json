@@ -24,23 +24,11 @@ DATA
 {
     "type" : "group",
     "name" : <name>,
-    "members" : ["id1", "id2", ...],
 }
 RESPONSE
-{ "status" : "ok" }
+{ "status" : "ok", "id" : <created id> }
 or
 { "status" : "failed" }
-
-/**
- * Get all groups.
- */
-GET /groups?user=<token>
-DATA
-{
-    <group id> : <group name>,
-    ...
-}
-
 
 /**
  * Create a user
@@ -49,13 +37,16 @@ POST /create?user=<token>
 DATA
 {
     "type" : "user",
+    "username" : <username>,
     "name" : <name>,
+    "password" : <password>,
     "group" : <group id>,
+    "teacher" : true/false,
 }
 RESPONSE
-{ "status" : "ok" }
+{ "status" : "ok", "id" : <created id> }
 or
-{ "status" : "failed" }
+{ "status" : "failed"  }
 
   
 /**
@@ -65,12 +56,64 @@ POST /create?user=<token>
 DATA
 {
     "type" : "test",
+    "title" : <title>,
+    "group" : <group-id>,
     "due" : <due date and time, YYYY-MM-DD HH:MM:SS>,
     "teacher" : <teachers user id>,
     "questions" : [
-	{ "text" : <question text> },
-	...
+        { "text" : <question text> },
+        ...
     ],
+}
+RESPONSE
+{ "status" : "ok" , "id" : <created id> }
+or
+{ "status" : "failed" }
+
+/**
+ * Get all groups.
+ */
+GET /groups?user=<token>
+RESPONSE
+{
+    <group id> : <group name>,
+    ...
+}
+
+/**
+ * Get all tests
+ */
+GET /tests?user=<token>
+RESPONSE
+{
+        <test id> : <test name>,
+}
+
+/**
+ * Get all tests for a group
+ */
+GET /tests?user=<token>&group=<group>
+RESPONSE
+{
+        <test id> : <test name>,
+}
+
+/**
+ * Get all users
+ */
+GET /users?user=<token>
+RESPONSE
+{
+        <user id> : <user name>,
+}
+
+/**
+ * Get all tests for a group
+ */
+GET /users?user=<token>&group=<group>
+RESPONSE
+{
+        <user id> : <user name>,
 }
 
 
@@ -82,12 +125,12 @@ RESPONSE
 {
     "<test-id>" :
     {
-	"title" : <title of the test>,
-	"due" : <due-date, YYYY-MM-DD HH:MM:SS>,
-	"teacher" : <name of the teacher giving the test>,
-	"questions" : [<id of question>, ...],
+        "title" : <title of the test>,
+        "due" : <due-date, YYYY-MM-DD HH:MM:SS>,
+        "teacher" : <name of the teacher giving the test>,
+        "questions" : [<id of question>, ...],
     },
-	...
+        ...
 }
 
 
@@ -124,14 +167,14 @@ DATA
 GET /result?user=<token>&for=<user-id>&test=<test-id>
 RESPONSE
 {
-    "answers" : [
-	{
-	    "question_text" : <question text>,
-	    "question_id" : <question id>,
-	    "answer" : <the answer picked by the user>,
-	    "gave_up" : true/false <gave up?>,
-	},
-	    ...
+    <user-id> : [
+        {
+            "question_text" : <question text>,
+            "question_id" : <question id>,
+            "answer" : <the answer picked by the user>,
+            "gave_up" : true/false <gave up?>,
+        },
+            ...
     ],
 }
 
@@ -142,7 +185,7 @@ RESPONSE
 GET /result?user=<token>&group=<group-id>&test=<test-id>
 RESPONSE
 {
-	<user-id> : [ same as "answers" in /result above ],
+        <user-id> : [ same as "answers" in /result above ],
     ...
 }
 
