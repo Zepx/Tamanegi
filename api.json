@@ -85,7 +85,7 @@ RESPONSE
 	"title" : <title of the test>,
 	"due" : <due-date, YYYY-MM-DD HH:MM:SS>,
 	"teacher" : <name of the teacher giving the test>,
-	"first-question" : <id of the first question>,
+	"first_question" : <id of the first question>,
     },
 	...
 }
@@ -116,9 +116,9 @@ RESPONSE: Same as in /question
  */
 POST /answer?user=<token>&id=<question id>
 DATA
-{ "answer-text" : <your answer> }
+{ "answer_text" : <your answer> }
 or
-{ "answer-id" : <# of the selected answer> }
+{ "answer_id" : <# of the selected answer> }
 
 
 /**
@@ -129,10 +129,10 @@ RESPONSE
 {
     "answers" : [
 	{
-	    "question-text" : <question text>,
-	    "question-id" : <question id>,
+	    "question_text" : <question text>,
+	    "question_id" : <question id>,
 	    "answer" : <the answer picked by the user>,
-	    "gave-up" : true/false <gave up?>,
+	    "gave_up" : true/false <gave up?>,
 	},
 	    ...
     ],
