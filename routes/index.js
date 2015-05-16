@@ -215,10 +215,10 @@ router.get('/setup', function(req, res) {
     db.Question.remove({}, function(err) {});
     
 
-    var q1 = new db.Question({text: "Question 1: Why?"});
+    var q1 = new db.Question({text: "Example question 1"});
     q1.save();
 
-    var q2 = new db.Question({text: "Question 2: Why were you right before?"});
+    var q2 = new db.Question({text: "Example question 2"});
     q2.save();
 
     var test = new db.Test({title: "Test 1", questions_id: [q1._id, q2._id], due: "2015-05-17 19:00:00"});
