@@ -21,7 +21,6 @@ function withUser(fn) {
 	if (!signedIn(req, res))
 	    return;
 
-	var token = req.user;
         fn(req.user, req, res);
     }
 }
@@ -60,10 +59,12 @@ router.get('/groups', withUser(function(user, reg, res) {
     });
 }));
 
-router.get('/tests', withUser(function(user, reg, res) {
+router.get('/tests', withUser(function(user, req, res) {
     var q = {};
-    if (reg.query.group !== undefined)
-        q = {_id: reg.query.group};
+    if (req.query.group !== undefined)
+        q = {_id: req.query.group};
+    else if (req.query.teacher !== undefined)
+        q = {teacher_id: req.query.teacher};
 
     db.Test.find(q, function(error, tests) {
         var result = {};
@@ -75,10 +76,10 @@ router.get('/tests', withUser(function(user, reg, res) {
     });
 }));
 
-router.get('/users', withUser(function(u, reg, res) {
+router.get('/users', withUser(function(u, req, res) {
     var q = {};
-    if (reg.query.group !== undefined)
-        q = {_id: reg.query.group};
+    if (req.query.group !== undefined)
+        q = {_id: req.query.group};
 
     User.find(q, function(error, users) {
         var result = {};
