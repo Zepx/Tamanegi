@@ -1,0 +1,38 @@
+[
+    {
+        "homework_id": "5557712a828b2754801ae61b",
+        "subject_id": "55577acb7188be41476faa25",
+        "homework_name": "Assignment 1",
+        "assigned_groups": [
+            {
+                "guid": "b8f738fe-ee98-4314-822f-d324eb8e774c",
+                "due_date": "Sun Aug 16 1998 05:49:09 GMT+0000 (UTC)"
+            }
+        ],
+        "total_questions": 2
+    },
+    {
+        "homework_id": "5557712a2f45632764d513dc",
+        "subject_id": "55577acb7188be41476faa25",
+        "homework_name": "Assignment 2",
+        "assigned_groups": [
+            {
+                "guid": "b8f738fe-ee98-4314-822f-d324eb8e774c",
+                "due_date": "Sun Mar 13 1983 10:32:03 GMT+0000 (UTC)"
+            }
+        ],
+        "total_questions":  1
+    },
+  {
+    "homework_id": "5557712a114c256b77284fb7",
+    "subject_id": "55577acb1dd213933acd5e88",
+    "homework_name": "Assignment 1",
+    "assigned_groups": [
+        {
+            "guid": "04d105da-9072-4d83-bcc5-97e06140e312",
+            "due_date": "Thu Jun 11 1970 22:01:13 GMT+0000 (UTC)"
+        }
+    ],
+    "total_questions":  2
+  }
+]

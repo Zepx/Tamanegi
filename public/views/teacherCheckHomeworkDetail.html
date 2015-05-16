@@ -1,0 +1,59 @@
+<div ng-cloak class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <!-- TODO: Place question content here-->
+<!--    <h1 class="page-header" style="font-size: 6rem;">Q{{questionObject.question_id}}. What is it?</h1>-->
+    <h1 class="page-header" style="font-size: 6rem;">Q.<span ng-bind="questionObject.question_id"></span></h1>
+    
+    <!-- TODO: Fetch student answers here -->
+    <!-- Student 1 -->
+    <div ng-repeat="answer in answers">
+        <div class="row placeholders">
+            <div class="col-md-3">
+                <!-- TODO: Fetch student information here -->
+                <div>
+                    <img class="img-responsive img-circle" src="/images/default-profile.jpg" style="margin: auto;" />
+                </div>
+                <h2 style="text-align: center;">Decha Muangsri</h2>
+            </div>
+            <div class="col-md-9 alert-warning">
+                <p style="text-align: justify;"><span style="font-size: 2rem; color: #777777">
+                    {{answer.answer}}
+                </span></p>
+            </div>
+        </div>
+        <div class="row placeholders">
+            <div class="alert alert-danger" ng-show="wrong">
+                <!-- TODO: Reflect real grading -->
+                <strong>Marked as wrong</strong>
+            </div>
+            <div class="alert alert-success" ng-show="success">
+                <!-- TODO: Reflect real grading -->
+                <strong>Marked as correct</strong>
+            </div>
+            <form class="form-horizontal">
+                <fieldset>
+                    <div class="form-group">
+                        <div class="col-lg-12 col-lg-offset-2">
+                            <input type="button" ng-click="success=!success" ng-init="success=false" class="btn btn-success" value="√" />
+                            <input type="button" ng-click="wrong=!wrong" ng-init="wrong=false" class="btn btn-warning" value="X" />
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="row placeholders">
+            <form class="form-horizontal" ng-show="!commentSaveIsshow" style="margin-bottom: 10px;" ng-init="commentSaveIsshow=false">
+                <fieldset>
+                    <h2 class="page-header"><span style="font-size: 4rem;">Comment</span></h2>
+                    <textarea placeholder="Your comment here" rows="4" style="width: 100%; font-size: 2rem;"></textarea>
+                    <input type="button" ng-click="commentSaveIsshow=true" class="btn btn-info btn-lg btn-block" value="Save comment" />
+                </fieldset>
+            </form>
+            <div ng-show="commentSaveIsshow" class="alert alert-dismissible alert-success">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>Comment has been saved</strong>.
+            </div>
+        </div>
+    </div>
+    <hr />
+
+</div>

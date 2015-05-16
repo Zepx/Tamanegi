@@ -1,0 +1,18 @@
+<div style="width: 100%;">
+    <h1>Date</h1>
+    <hr />
+    <div class="row placeholders">
+        <a ng-repeat="homework in homeworks" ui-sref="dohomework.questionId({itemId:{{homework.question_id}}})">
+
+            <div class="col-xs-6 col-sm-3">
+                <div class="panel panel-default">
+                    <img class="img-responsive img-rounded" ng-src="{{homework.image}}" data-holder-rendered="true" style="width: 100%">
+                    <div class="panel-footer">
+                        <h4>{{homework.title}}</h4>
+                        {{homework.description}}
+                    </div>
+                </div>
+            </div>
+        </a> 
+    </div>
+</div>

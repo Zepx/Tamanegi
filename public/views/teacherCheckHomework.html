@@ -1,0 +1,16 @@
+      <div class="row">
+          
+        <div class="col-sm-3 col-md-2 sidebar">
+        <p>Question Check</p>
+          <ul class="nav nav-sidebar" ng-repeat="question in questions">
+            <li>
+                <a ui-sref="checkhomework.questionnumber({questionId:{{question.question_id}}})">Q. {{question.question_id}} {{question.description}}</a>
+            </li>
+          </ul>
+        </div>
+          
+        <div class="main">  
+            <div class="container" ui-view></div>
+        </div>
+          
+      </div>

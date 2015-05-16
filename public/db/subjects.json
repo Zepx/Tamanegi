@@ -1,0 +1,25 @@
+[
+  {
+    "homeworks": [
+      {
+        "homework_id": "5557712a828b2754801ae61b"
+      },
+      {
+        "homework_id": "5557712a2f45632764d513dc"
+      }
+    ],
+    "subject_name": "Operation Management 2",
+    "subject_id": "55577acb7188be41476faa25",
+    "uid": "55576b6316fc4a81b549ce09"
+  },
+  {
+    "homeworks": [
+      {
+        "homework_id": "5557712a114c256b77284fb7"
+      }
+    ],
+    "subject_name": "Operation Management 4",
+    "subject_id": "55577acb1dd213933acd5e88",
+    "uid": "55576b6316fc4a81b549ce09"
+  }
+]

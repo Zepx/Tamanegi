@@ -1,0 +1,52 @@
+<div ng-controller="TeacherViewController" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2 main">  
+
+    <div class="row">
+        <div style="float: right;">
+            <a ui-sref="createhomework.questionnumber({questionId:0})">
+                <input type="button" id="createNewHomeWork" class="btn btn-primary" value="Create New Homework" ></input>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <h1>Grading Pending</h1>
+        <hr />
+        <div class="row placeholders">
+            <a ng-repeat="homework in homeworks" ui-sref="checkhomework.questionnumber({questionId: homework.question_id})">
+
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3">
+                    <div class="panel panel-default">
+                        <img class="img-responsive img-rounded" ng-src="{{homework.image}}" data-holder-rendered="true" style="width: 100%">
+                        <div class="panel-footer">
+                            <h4>{{homework.title}}</h4>
+                            {{homework.description}}
+                        </div>
+                    </div>
+                </div>
+            </a> 
+        </div>
+    </div>
+
+    <hr />
+
+    <div ng-repeat="subject in subjects">
+
+        <h1>{{subject.title}}</h1>
+        <hr />
+
+        <div class="row placeholders">
+            <!-- TODO: Put actual link -->
+            <a ng-repeat="homework in subject.homeworks" href="#">
+                <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2">
+                    <div class="panel panel-default">
+                        <img class="img-responsive img-rounded" ng-src="{{homework.image}}" data-holder-rendered="true" style="width: 100%">
+                        <div class="panel-footer">
+                            <h4>{{homework.title}}</h4>
+                            {{homework.description}}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</div>

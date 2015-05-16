@@ -4,6 +4,12 @@ var db = require('../data');
 var User = require('../models/user')
 var passport = require('passport');
 
+var auth = function(req, res, next) { 
+   if (!req.isAuthenticated()) 
+      res.send(401); 
+   else next(); 
+};
+
 function notSignedIn(res) {
     res.status(500).json({error: "Not signed in!"});
 }
@@ -91,7 +97,7 @@ router.get('/users', withUser(function(u, req, res) {
     });
 }));
 
-router.get('/dash', withUser(function(user, req, res) {
+router.get('/dash', auth, withUser(function(user, req, res) {
     db.testsFor(user, function(tests) {
         var r = {};
         for (test in tests) {
@@ -151,7 +157,7 @@ function createTest(body, res) {
     });
 }
 
-router.get('/question', withQuestion(function(user, question, req, res) {
+router.get('/question', auth, withQuestion(function(user, question, req, res) {
     res.json(question.asJson(user));
 }));
 
@@ -264,6 +270,10 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
     res.redirect('/');
 });
 
+router.get('/loggedin', function(req, res) {
+   res.json(req.isAuthenticated());
+})
+
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
@@ -272,5 +282,6 @@ router.get('/logout', function(req, res) {
 router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });
+
 
 module.exports = router;
