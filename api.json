@@ -61,8 +61,8 @@ DATA
     "due" : <due date and time, YYYY-MM-DD HH:MM:SS>,
     "teacher" : <teachers user id>,
     "questions" : [
-	{ "text" : <question text> },
-	...
+        { "text" : <question text> },
+        ...
     ],
 }
 RESPONSE
@@ -86,7 +86,7 @@ RESPONSE
 GET /tests?user=<token>
 RESPONSE
 {
-	<test id> : <test name>,
+        <test id> : <test name>,
 }
 
 /**
@@ -95,7 +95,7 @@ RESPONSE
 GET /tests?user=<token>&group=<group>
 RESPONSE
 {
-	<test id> : <test name>,
+        <test id> : <test name>,
 }
 
 /**
@@ -104,7 +104,7 @@ RESPONSE
 GET /users?user=<token>
 RESPONSE
 {
-	<user id> : <user name>,
+        <user id> : <user name>,
 }
 
 /**
@@ -113,7 +113,7 @@ RESPONSE
 GET /users?user=<token>&group=<group>
 RESPONSE
 {
-	<user id> : <user name>,
+        <user id> : <user name>,
 }
 
 
@@ -125,12 +125,12 @@ RESPONSE
 {
     "<test-id>" :
     {
-	"title" : <title of the test>,
-	"due" : <due-date, YYYY-MM-DD HH:MM:SS>,
-	"teacher" : <name of the teacher giving the test>,
-	"questions" : [<id of question>, ...],
+        "title" : <title of the test>,
+        "due" : <due-date, YYYY-MM-DD HH:MM:SS>,
+        "teacher" : <name of the teacher giving the test>,
+        "questions" : [<id of question>, ...],
     },
-	...
+        ...
 }
 
 
@@ -168,13 +168,13 @@ GET /result?user=<token>&for=<user-id>&test=<test-id>
 RESPONSE
 {
     <user-id> : [
-	{
-	    "question_text" : <question text>,
-	    "question_id" : <question id>,
-	    "answer" : <the answer picked by the user>,
-	    "gave_up" : true/false <gave up?>,
-	},
-	    ...
+        {
+            "question_text" : <question text>,
+            "question_id" : <question id>,
+            "answer" : <the answer picked by the user>,
+            "gave_up" : true/false <gave up?>,
+        },
+            ...
     ],
 }
 
@@ -185,7 +185,7 @@ RESPONSE
 GET /result?user=<token>&group=<group-id>&test=<test-id>
 RESPONSE
 {
-	<user-id> : [ same as "answers" in /result above ],
+        <user-id> : [ same as "answers" in /result above ],
     ...
 }
 
