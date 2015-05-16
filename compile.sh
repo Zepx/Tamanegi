@@ -30,7 +30,7 @@ function reloadFirefox {
     echo -e "\nSetup done\n"
 
     echo "Login..."
-    durl -s --data "username=filip&password=pwd" http://localhost:3000/login > /dev/null
+    durl -s --data "username=test&password=pwd" http://localhost:3000/login > /dev/null
 
     questions=`durl -s http://localhost:3000/dash`
     echo $questions

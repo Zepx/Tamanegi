@@ -227,9 +227,8 @@ router.get('/setup', function(req, res) {
     var group = new db.Group({name: "class A", tests_id: [test.id]});
     group.save();
 
-    //var user = new User({username: 'filip', name: "filip", password: 'filip', group_id: group.id});
-    User.register(new User({ username: 'filip', name: 'Filip Stromback', group_id: group._id}), 'pwd', function(err, account) {
-        var user = User.findByUsername('filip');
+    User.register(new User({ username: 'test', name: 'Test User', group_id: group._id, teacher:true}), 'pwd', function(err, account) {
+        var user = User.findByUsername('test');
 
         q1.answers.push({text: "Answer 1", group_id: group._id, user_id: user._id});
         q1.save();
