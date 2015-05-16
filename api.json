@@ -1,0 +1,151 @@
+/**
+ * API
+ */
+
+
+/**
+ * Log in a user. Checks the username/password. Returns the session.
+ */
+POST /login
+DATA
+{ "username" : <username>, "password" : <password> }
+
+RESPONSE
+{ "status" : "ok", "token" : <token> }
+
+or
+{ "status" : "failed" }
+
+/**
+ * Create a group.
+ */
+POST /create?user=<token>
+DATA
+{
+    "type" : "group",
+    "name" : <name>,
+    "members" : ["id1", "id2", ...],
+}
+RESPONSE
+{ "status" : "ok" }
+or
+{ "status" : "failed" }
+
+/**
+ * Get all groups.
+ */
+GET /groups?user=<token>
+DATA
+{
+    <group id> : <group name>,
+    ...
+}
+
+
+/**
+ * Create a user
+ */
+POST /create?user=<token>
+DATA
+{
+    "type" : "user",
+    "name" : <name>,
+    "group" : <group id>,
+}
+RESPONSE
+{ "status" : "ok" }
+or
+{ "status" : "failed" }
+
+  
+/**
+ * Create a test.
+ */
+POST /create?user=<token>
+DATA
+{
+    "type" : "test",
+    "due" : <due date and time, YYYY-MM-DD HH:MM:SS>,
+    "teacher" : <teachers user id>,
+    "questions" : [
+	{ "text" : <question text> },
+	...
+    ],
+}
+
+
+/**
+ * Get all assignments for the current user.
+ */
+GET /dash?user=<token>
+RESPONSE
+{
+    "<test-id>" :
+    {
+	"title" : <title of the test>,
+	"due" : <due-date, YYYY-MM-DD HH:MM:SS>,
+	"teacher" : <name of the teacher giving the test>,
+	"first-question" : <id of the first question>,
+    },
+	...
+}
+
+
+/**
+ * Get a question.
+ * NOTE: alternatives are not present unless the user is supposed to see them!
+ */
+GET /question?user=<token>&id=<question id>
+RESPONSE
+{
+    "text" : <question text>,
+    "answer" : <the students previous answer (if any)>,
+    "alternatives" : [ "alternative1", ... ],
+    "next" : <id of the next question>,
+}
+
+
+/**
+ * Give up a question.
+ */
+POST /give_up?user=<token>&id=<question id>
+RESPONSE: Same as in /question
+
+/**
+ * Answer a question.
+ */
+POST /answer?user=<token>&id=<question id>
+DATA
+{ "answer-text" : <your answer> }
+or
+{ "answer-id" : <# of the selected answer> }
+
+
+/**
+ * Get the result for a user and a test.
+ */
+GET /result?user=<token>&for=<user-id>&test=<test-id>
+RESPONSE
+{
+    "answers" : [
+	{
+	    "question-text" : <question text>,
+	    "question-id" : <question id>,
+	    "answer" : <the answer picked by the user>,
+	    "gave-up" : true/false <gave up?>,
+	},
+	    ...
+    ],
+}
+
+
+/**
+ * Get results for an entire group.
+ */
+GET /result?user=<token>&group=<group-id>&test=<test-id>
+RESPONSE
+{
+	<user-id> : [ same as "answers" in /result above ],
+    ...
+}
+
