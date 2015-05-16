@@ -11,32 +11,6 @@ db.once('open', function (callback) {
 });
 
 
-var userSchema = mongoose.Schema({
-    name: String,
-    password: String, /* Plain-text for now... */
-    teacher: Boolean, /* Teacher? Teacher may create tests and so on... */
-    group_id: ObjectId, /* Reference to Group object */
-});
-
-
-userSchema.methods.tests = function(callback) {
-    var q = {_id: this.group_id};
-    e.Group.find(q, function (err, result) {
-	var tests = [];
-	for (i in result)
-	    tests = tests.concat(result[i].tests_id);
-
-	var q = {_id: {$in: tests}};
-	e.Test.find(q, function (err, result) {
-	    callback(result);
-	});
-    });
-}
-
-
-e.User = mongoose.model('User', userSchema);
-
-
 var groupSchema = mongoose.Schema({
     name: String,
     tests_id : [ObjectId],

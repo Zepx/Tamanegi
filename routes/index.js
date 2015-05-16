@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var db = require('../data.js');
+var db = require('../data');
+var User = require('../models/user')
+var passport = require('passport');
 
 function notSignedIn(res) {
     res.status(500).json({error: "Not signed in!"});
@@ -24,7 +26,7 @@ function withUser(fn) {
 
 	// Get our user...
 	var token = req.query.user;
-	db.User.findOne({name: token}, function (err, user) {
+	User.findOne({name: token}, function (err, user) {
 	    if (!user || err)
 		notSignedIn(res);
 	    else
@@ -44,7 +46,7 @@ function withQuestion(fn) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
+     res.render('index', { user : req.user });
 });
 
 router.get('/dash', withUser(function(user, req, res) {
@@ -81,7 +83,7 @@ router.post('/answer', withQuestion(function(user, question, req, res) {
 /* Debug route, sets up a basic system for testing! */
 router.get('/setup', function(req, res) {
     db.Group.remove({}, function(err) {});
-    db.User.remove({}, function(err) {});
+    User.remove({}, function(err) {});
     db.Test.remove({}, function(err) {});
     db.Question.remove({}, function(err) {});
     
@@ -98,14 +100,50 @@ router.get('/setup', function(req, res) {
     var group = new db.Group({title: "class A", tests_id: [test.id]});
     group.save();
 
-    var user = new db.User({name: "filip", group_id: group.id});
-    user.save();
+    //var user = new User({username: 'filip', name: "filip", password: 'filip', group_id: group.id});
+    User.register(new User({ username: 'filip', name: 'Filip Stromback'}), 'filip', function(err, account) {
+       var user = User.findByUsername('filip');
+       q1.answers.push({text: "Answer 1", group_id: group._id, user_id: user._id});
+       q1.save();
 
-    q1.answers.push({text: "Answer 1", group_id: group._id, user_id: user._id});
-    q1.save();
+       res.send("OK");
+       console.log("Setup complete!");
+    });
+    
+    
+});
 
-    res.send("OK");
-    console.log("Setup complete!");
+router.get('/register', function(req, res) {
+    res.render('register', { });
+});
+
+router.post('/register', function(req, res) {
+    User.register(new User({ username : req.body.username }), req.body.password, function(err, account) {
+        if (err) {
+          return res.render("register", {info: "Sorry. That username already exists. Try again."});
+        }
+
+        passport.authenticate('local')(req, res, function () {
+            res.redirect('/');
+        });
+    });
+});
+
+router.get('/login', function(req, res) {
+    res.render('login', { user : req.user });
+});
+
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/');
+});
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+router.get('/ping', function(req, res){
+    res.status(200).send("pong!");
 });
 
 module.exports = router;
