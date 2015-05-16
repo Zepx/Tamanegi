@@ -9,13 +9,10 @@ function notSignedIn(res) {
 }
 
 function signedIn(req, res) {
-    if (!req.query.user) {
+    if (req.user === undefined) {
         notSignedIn(res);
         return false;
     }
-
-    var token = req.query.user;
-    // TODO: Validate token!
     return true;
 }
 
@@ -24,14 +21,8 @@ function withUser(fn) {
 	if (!signedIn(req, res))
 	    return;
 
-	// Get our user...
-	var token = req.query.user;
-	User.findOne({username: token}, function (err, user) {
-	    if (!user || err)
-		notSignedIn(res);
-	    else
-		fn(user, req, res);
-	});
+	var token = req.user;
+        fn(req.user, req, res);
     }
 }
 
