@@ -47,7 +47,7 @@ testSchema.methods.asJson = function() {
     }
 }
 
-testSchema.methods.asDeepJson = function(cb) {
+testSchema.methods.asDeepJson = function(user, cb) {
     var self = this;
     e.Question.find({_id: {$in: this.questions_id}}, function(error, questions) {
         var qMap = {};
@@ -56,7 +56,7 @@ testSchema.methods.asDeepJson = function(cb) {
 
         var q = [];
         for (var i = 0; i < self.questions_id.length; i++) {
-            q.push(qMap[self.questions_id[i]]);
+            q.push(qMap[self.questions_id[i]].asJson(user));
         }
 
         cb({
@@ -101,6 +101,7 @@ questionSchema.methods.asJson = function(user) {
         alternatives = [];
 
     return {
+        _id: this._id,
         text: this.text,
         answer: our,
         alternatives: alternatives,

@@ -139,7 +139,7 @@ router.get('/dash', auth, withUser(function(user, req, res) {
 }));
 
 router.get('/test', auth, withTest(function(user, test, req, res) {
-    test.asDeepJson(function(result) {
+    test.asDeepJson(user, function(result) {
         res.json(result);
     });
 }));

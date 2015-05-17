@@ -388,7 +388,8 @@ app.controller('questionViewController', ['$scope', '$http', '$state', '$statePa
                     q_index: (i + 1), question_text: data.questions[i].text});
         }
 
-        $scope.firstQuestion = r[0].q_link;
+        console.log(data);
+        // $scope.firstQuestion = r[0].q_link;
         $scope.id = $stateParams.testId;
         $scope.questions = r;
   });
