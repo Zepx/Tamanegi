@@ -67,7 +67,7 @@ router.get('/groups', withUser(function(user, reg, res) {
 
 function testQuery(fn) {
     return function(user, req, res) {
-        var q = undefined;
+        var q = {};
         var group = undefined;
         if (req.query.group !== undefined)
             group = req.query.group;
@@ -78,13 +78,13 @@ function testQuery(fn) {
         else if (req.query.teacher !== undefined)
             q = {teacher_id: req.query.teacher};
 
-        if (q !== undefined) {
-            fn(q, req, res);
-        } else {
+        if (group !== undefined) {
             db.Group.findOne({_id: group}, function(error, r) {
                 q = {_id: {$in: r.tests_id}};
                 fn(q, req, res);
             });
+        } else {
+            fn(q, req, res);
         }
     }
 }
@@ -130,6 +130,10 @@ router.get('/dash', auth, withUser(function(user, req, res) {
         }
         res.json(r);
     });
+}));
+
+router.get('/test', auth, withTest(function(user, test, req, res) {
+    res.json(test);
 }));
 
 router.post('/create', withUser(function(user, req, res) {

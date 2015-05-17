@@ -163,6 +163,17 @@ RESPONSE
         ...
 }
 
+/**
+ * Get the contents of a test
+ */
+GET /test?test=<test id>
+RESPONSE
+{
+    "title" : <title of the test>,
+    "due" : <due-date, YYYY-MM-DD HH:MM:SS>,
+    "teacher" : <name of the teacher giving the test>,
+    "questions" : [<id of question>, ...],
+}
 
 /**
  * Get a question.
