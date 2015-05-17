@@ -314,23 +314,32 @@ app.controller('TeacherViewController', ['$scope','$http', function($scope,$http
   
 }]);
 
-app.controller('AnswerSubmitController', ['$scope', function($scope) {
+app.controller('AnswerSubmitController', ['$scope', '$http', function($scope, $http) {
   //$scope.list = [];
-  $scope.answertext = 'hello';
+    //$scope.answertext = 'hello';
   $scope.submit = function() {
       //$scope.list.push(this.text);
       //$scope.text = '';
         $scope.motherChecker = $scope.answertext
-        $scope.answerSubmited = true
-        console.log($scope.motherChecker)
-    
+      console.log($scope.motherChecker)
+      console.log($scope.currentquestion);
+
+      $http.post('/answer?id='+$scope.currentquestion.question_id, {answer_text: $scope.answertext}).success(function(data) {
+          $scope.answerSubmited = true
+          console.log(data);
+          // update alternatives in data.alternatives
+      });
   };
   $scope.motherChecker = 'This is mother checker';
   $scope.showAnswer = false;
     
   $scope.toggle = function() {
     //  $scope.answerSubmited = $scope.answerSubmited
-    $scope.showAnswer = true;//!$scope.showAnswer
+      $http.post('/give_up?id='+$scope.currentquestion.question_id).success(function(data) {
+          $scope.showAnswer = true;//!$scope.showAnswer
+          console.log(data);
+          // update alternatives in data.alternatives
+      });
     //$scope.answertext = $scope.motherChecker
   };
     
@@ -348,17 +357,20 @@ app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http
             $scope.currentquestion = {
                 question_id: data.questions[0]._id,
                 question_order: 1,
-                question_text: data.questions[0].text
+                question_text: data.questions[0].text,
             };
+            $scope.answertext = data.questions[0].answer;
         });
     } else {
         var parts = (item + "").split("-");
         $http.get('/question?id='+parts[1]).success(function(data) {
             $scope.currentquestion = {
-                question_id: $stateParams.itemId,
+                question_id: parts[1],
                 question_order: parts[0],
                 question_text: data.text,
+                answer: data.answer,
             };
+            $scope.answertext = data.answer;
         });
     }
 }]);
