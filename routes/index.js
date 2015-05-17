@@ -256,13 +256,13 @@ router.get('/setup', function(req, res) {
     db.Question.remove({}, function(err) {});
     
 
-    var q1 = new db.Question({text: "Example question 1"});
+    var q1 = new db.Question({text: "What is the name of the king in Sweden?"});
     q1.save();
 
-    var q2 = new db.Question({text: "Example question 2"});
+    var q2 = new db.Question({text: "How much coffe was consumed during the hackathon?"});
     q2.save();
 
-    var test = new db.Test({title: "Test 1", questions_id: [q1._id, q2._id], due: "2015-05-17 19:00:00", teacher_id: ""});
+    var test = new db.Test({title: "Current facts", questions_id: [q1._id, q2._id], due: "2015-05-17 19:00:00", teacher_id: ""});
     test.save();
 
     var group = new db.Group({name: "class A", tests_id: [test.id]});
@@ -270,8 +270,11 @@ router.get('/setup', function(req, res) {
 
     var user = new User({ username: 'test', name: 'Test User', group_id: group._id, teacher:true});
     User.register(user, 'pwd', function(err, account) {
-        q1.answers.push({text: "Answer 1", group_id: group._id, user_id: user._id});
-        q1.save();
+        // q1.answers.push({text: "Kung Carl Gustaf XVi", group_id: group._id, user_id: user._id});
+        // q1.save();
+
+        // q2.answers.push({text: "100L", group_id: group._id, user_id: user._id});
+        // q2.save();
 
         test.teacher_id = user._id;
         test.save();
@@ -279,7 +282,33 @@ router.get('/setup', function(req, res) {
         res.send("OK");
         console.log("Setup complete!");
     });
-    
+
+    var user2 = new User({ username: 'filip', name: 'Filip', group_id: group._id, teacher:true});
+    User.register(user2, 'pwd', function(err, account) {
+        q1.answers.push({text: "Kung Carl Gustaf XVI", group_id: group._id, user_id: user2._id});
+        q1.save();
+
+        q2.answers.push({text: "100L", group_id: group._id, user_id: user2._id});
+        q2.save();
+
+        test.teacher_id = user._id;
+        test.save();
+        console.log("Setup complete!");
+    });
+
+    var user3 = new User({ username: 'jun', name: 'Jun', group_id: group._id, teacher:true});
+    User.register(user2, 'pwd', function(err, account) {
+        q1.answers.push({text: "No idea", group_id: group._id, user_id: user2._id});
+        q1.save();
+
+        q2.answers.push({text: "120L", group_id: group._id, user_id: user2._id});
+        q2.save();
+
+        test.teacher_id = user._id;
+        test.save();
+        console.log("Setup complete!");
+    });
+
     
 });
 

@@ -360,7 +360,7 @@ app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http
                 question_id: data.questions[0]._id,
                 question_order: 1,
                 question_text: data.questions[0].text,
-                alternatives: data.questions[0].alternatives;
+                alternatives: data.questions[0].alternatives,
             };
             $scope.answertext = data.questions[0].answer;
         });
@@ -371,7 +371,7 @@ app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http
                 question_id: parts[1],
                 question_order: parts[0],
                 question_text: data.text,
-                alternatives: data.alternatives;
+                alternatives: data.alternatives,
             };
             $scope.answertext = data.answer;
         });
