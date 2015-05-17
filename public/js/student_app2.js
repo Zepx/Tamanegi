@@ -117,7 +117,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider){
           controller: 'StudentViewController'
       })  
     .state('dohomework', {
-        url: "/dohomework",
+        url: "/dohomework/:testId",
         templateUrl: "views/dohomework.html",
         controller: 'questionViewController'
     })
@@ -342,11 +342,17 @@ app.controller('AnswerSubmitController', ['$scope', function($scope) {
 }]);
 
 app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http', function($scope, $stateParams,$http) {
-
-  $http.get('/question?id='+$stateParams.itemId).success(function(data) {
-     $scope.currentquestion = data;
-     console.log(data)
+    var parts = ($stateParams.itemId + "").split("-");
+    console.log($stateParams.itemId);
+    console.log(parts);
+    $http.get('/question?id='+parts[1]).success(function(data) {
+        $scope.currentquestion = {
+            question_id: $stateParams.itemId,
+            question_order: parts[0],
+            question_text: data.text,
+        };
   });
+
     
 //  $scope.currentquestion = {
 //    question_id : $stateParams.itemId,
@@ -356,13 +362,23 @@ app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http
  
 }]);
 
-app.controller('questionViewController', ['$scope', function($scope,  $state, $stateParams) {
-  $scope.questions = [
-      {question_id: 1, title: 'Homework A', question_text: 'What is the future of the US-Saudi energy relationship?'},
-      {question_id: 2, title: 'Homework A', question_text: 'What is the future of US-Saudi military ties?'},
-      {question_id: 3, title: 'Homework A', question_text: 'What is the purpose of foreign aid?'},
-      {question_id: 4, title: 'Homework A', question_text: 'Why should the government rather than private NGOs take the lead on aid?'},
-  ];
+app.controller('questionViewController', ['$scope', '$http', '$state', '$stateParams', function($scope,  $http, $state, $stateParams) {
+    $http.get('/test?test='+$stateParams.testId).success(function(data) {
+        var r = [];
+        for (var i = 0; i < data.questions.length; i++) {
+            var l = (i + 1) + "-" + data.questions[i]._id;
+            r.push({q_link: l,
+                    q_index: (i + 1), question_text: data.questions[i].text});
+        }
+        $scope.id = $stateParams.testId;
+        $scope.questions = r;
+  });
+  // $scope.questions = [
+  //     {question_id: 1, title: 'Homework A', question_text: 'What is the future of the US-Saudi energy relationshipA?'},
+  //     {question_id: 2, title: 'Homework A', question_text: 'What is the future of US-Saudi military ties?'},
+  //     {question_id: 3, title: 'Homework A', question_text: 'What is the purpose of foreign aid?'},
+  //     {question_id: 4, title: 'Homework A', question_text: 'Why should the government rather than private NGOs take the lead on aid?'},
+  // ];
   //console.log($stateParams.qid);
 
 }]);

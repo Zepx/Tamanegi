@@ -38,7 +38,7 @@ function withTest(fn) {
             if (test !== null)
                 fn(user, test, req, res);
             else
-                req.json({error: "Test does not exist"});
+                res.json({error: "Test does not exist"});
         })
     });
 }
@@ -50,7 +50,7 @@ function withQuestion(fn) {
             if (question !== null)
                 fn(user, question, req, res);
             else
-                req.json({error: "Question does not exist"});
+                res.json({error: "Question does not exist"});
         });
     });
 }

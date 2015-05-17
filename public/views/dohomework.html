@@ -10,7 +10,7 @@
         <p>Assignment X</p>
           <ul class="nav nav-sidebar" ng-repeat="question in questions">
             <li>
-                <a ui-sref="dohomework.questionId({itemId:question.question_id})">Q. {{question.question_id}} {{question.question_text}}</a>
+                <a ui-sref="dohomework.questionId({testId:id, itemId:question.q_link})">Q. {{question.q_index}} {{question.question_text}}</a>
 <!--                <p>Question {{question.question_id}}</p>-->
               </li>
               
