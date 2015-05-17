@@ -391,6 +391,7 @@ app.controller('questionViewController', ['$scope', '$http', '$state', '$statePa
         console.log(data);
         // $scope.firstQuestion = r[0].q_link;
         $scope.id = $stateParams.testId;
+        $scope.title = data.title;
         $scope.questions = r;
   });
   // $scope.questions = [
