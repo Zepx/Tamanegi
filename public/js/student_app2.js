@@ -101,7 +101,10 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider){
   // Student View Call here
     .state('studenthome', {
         url: "/studenthome",
-        templateUrl: "views/home.html"
+        templateUrl: "views/home.html",
+        resolve: {
+           loggedin: checkLoggedin
+        }
     })
     .state('studenthome.studentDate', {
           url: "/studentDate",
