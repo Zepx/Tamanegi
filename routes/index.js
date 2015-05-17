@@ -65,22 +65,46 @@ router.get('/groups', withUser(function(user, reg, res) {
     });
 }));
 
-router.get('/tests', withUser(function(user, req, res) {
-    var q = {};
-    if (req.query.group !== undefined)
-        q = {_id: req.query.group};
-    else if (req.query.teacher !== undefined)
-        q = {teacher_id: req.query.teacher};
+function testQuery(fn) {
+    return function(user, req, res) {
+        var q = undefined;
+        var group = undefined;
+        if (req.query.group !== undefined)
+            group = req.query.group;
+        else if (req.query.user == "me")
+            group = user.group_id;
+        else if (req.query.teacher == "me")
+            q = {teacher_id: user._id };
+        else if (req.query.teacher !== undefined)
+            q = {teacher_id: req.query.teacher};
 
+        if (q !== undefined) {
+            fn(q, req, res);
+        } else {
+            db.Group.findOne({_id: group}, function(error, r) {
+                q = {_id: {$in: r.tests_id}};
+                fn(q, req, res);
+            });
+        }
+    }
+}
+
+router.get('/tests', withUser(testQuery(function(q, req, res) {
     db.Test.find(q, function(error, tests) {
-        var result = {};
+        var result = [];
+
         for (var i = 0; i < tests.length; i++) {
             var test = tests[i];
-            result[test._id] = test.title;
+            result.push({
+                test_id: test._id,
+                title: test.title,
+                type: "Math",
+                image:"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTiAcispLDx41n8BbRDZUntJJwZ9kqOWYHaZgkSu5KL1Zp-U9cPbQ"
+            });
         }
         res.json(result);
     });
-}));
+})));
 
 router.get('/users', withUser(function(u, req, res) {
     var q = {};
@@ -184,7 +208,6 @@ router.get('/result', withTest(function(user, test, req, res) {
     else if (req.query.group !== undefined)
         q = {group_id: req.query.group};
 
-    console.log(q);
     User.find(q, function(error, forUsers) {
         db.Question.find({_id: {$in: test.questions_id}}, function(error, questions) {
             var all = {};
@@ -227,17 +250,19 @@ router.get('/setup', function(req, res) {
     var q2 = new db.Question({text: "Example question 2"});
     q2.save();
 
-    var test = new db.Test({title: "Test 1", questions_id: [q1._id, q2._id], due: "2015-05-17 19:00:00"});
+    var test = new db.Test({title: "Test 1", questions_id: [q1._id, q2._id], due: "2015-05-17 19:00:00", teacher_id: ""});
     test.save();
 
     var group = new db.Group({name: "class A", tests_id: [test.id]});
     group.save();
 
-    User.register(new User({ username: 'test', name: 'Test User', group_id: group._id, teacher:true}), 'pwd', function(err, account) {
-        var user = User.findByUsername('test');
-
+    var user = new User({ username: 'test', name: 'Test User', group_id: group._id, teacher:true});
+    User.register(user, 'pwd', function(err, account) {
         q1.answers.push({text: "Answer 1", group_id: group._id, user_id: user._id});
         q1.save();
+
+        test.teacher_id = user._id;
+        test.save();
 
         res.send("OK");
         console.log("Setup complete!");

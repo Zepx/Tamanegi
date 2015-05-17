@@ -154,7 +154,7 @@ app.controller('LoginCtrl', function($scope, $rootScope, $http, $location) {
    
 app.controller('QuestionCheckIdController', ['$scope', '$stateParams', '$http' ,function($scope, $stateParams, $http) {
   $scope.questionObject = {question_id: 1, title: 'Homework A', question_text: 'What is it?'};
-  $http.get("data/homeworks.json").success(function(data) {
+  $http.get("/homeworks?teacher=me").success(function(data) {
      $scope.questions = data;
      console.log(data);
      
@@ -238,7 +238,7 @@ app.controller('CreateHomeworkViewController', ['$scope', function($scope,  $sta
 
 
 app.controller('TeacherViewController', ['$scope','$http', function($scope,$http) {
-  $http.get('data/homeworks.json').success(function(data) {
+  $http.get('tests?teacher=me').success(function(data) {
      $scope.homeworks = data;
   });
     
@@ -358,7 +358,7 @@ app.controller('questionViewController', ['$scope', function($scope,  $state, $s
 }]);
 
 app.controller('StudentViewController', ['$scope','$http', function($scope, $http) {
-  $http.get("data/homeworks.json").success(function(data) {
+  $http.get("tests?user=me").success(function(data) {
      $scope.homeworks = data;
      console.log(data);
   });
