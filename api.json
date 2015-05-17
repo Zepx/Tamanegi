@@ -73,7 +73,13 @@ RESPONSE
 GET /tests
 RESPONSE
 {
-        <test id> : <test name>,
+   {
+      "question_id":1,
+      "title":"Homework A",
+      "description":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor",
+      "type":"Math",
+      "image":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTiAcispLDx41n8BbRDZUntJJwZ9kqOWYHaZgkSu5KL1Zp-U9cPbQ"
+   },
 }
 
 /**
@@ -82,8 +88,30 @@ RESPONSE
 GET /tests?group=<group>
 RESPONSE
 {
-        <test id> : <test name>,
+   {
+      "test_id":1,
+      "title":"Homework A",
+      "description":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor",
+      "type":"Math",
+      "image":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTiAcispLDx41n8BbRDZUntJJwZ9kqOWYHaZgkSu5KL1Zp-U9cPbQ"
+   },
 }
+
+/**
+ * Get all tests for a group
+ */
+GET /tests?user=<user>
+RESPONSE
+{
+   {
+      "test_id":1,
+      "title":"Homework A",
+      "description":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor",
+      "type":"Math",
+      "image":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTiAcispLDx41n8BbRDZUntJJwZ9kqOWYHaZgkSu5KL1Zp-U9cPbQ"
+   },
+}
+
 
 /**
  * Get all tests for a teacher
@@ -91,7 +119,13 @@ RESPONSE
 GET /tests?teacher=<teacher-id>
 RESPONSE
 {
-        <test id> : <test name>,
+   {
+      "test_id":1,
+      "title":"Homework A",
+      "description":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor",
+      "type":"Math",
+      "image":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTiAcispLDx41n8BbRDZUntJJwZ9kqOWYHaZgkSu5KL1Zp-U9cPbQ"
+   },
 }
 
 /**
