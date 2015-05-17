@@ -335,16 +335,14 @@ app.controller('AnswerSubmitController', ['$scope', '$http', function($scope, $h
   $scope.showAnswer = false;
     
   $scope.toggle = function() {
-    //  $scope.answerSubmited = $scope.answerSubmited
-    if ($scope.answertext) {
-          $http.post('/give_up?id='+$scope.currentquestion.question_id).success(function(data) {
-              $scope.showAnswer = true;//!$scope.showAnswer
-              console.log(data);
-              $scope.currentquestion.alternatives = data.alternatives;
-              // update alternatives in data.alternatives
-          });
-        //$scope.answertext = $scope.motherChecker
-      };
+      //  $scope.answerSubmited = $scope.answerSubmited
+      $http.post('/give_up?id='+$scope.currentquestion.question_id).success(function(data) {
+          $scope.showAnswer = true;//!$scope.showAnswer
+          console.log(data);
+          $scope.currentquestion.alternatives = data.alternatives;
+          // update alternatives in data.alternatives
+      });
+      //$scope.answertext = $scope.motherChecker
   }
     
   $scope.answerSubmited = false;

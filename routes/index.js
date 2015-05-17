@@ -298,10 +298,10 @@ router.get('/setup', function(req, res) {
 
     var user3 = new User({ username: 'jun', name: 'Jun', group_id: group._id, teacher:true});
     User.register(user2, 'pwd', function(err, account) {
-        q1.answers.push({text: "No idea", group_id: group._id, user_id: user2._id});
+        q1.answers.push({text: "No idea", group_id: group._id, user_id: user3._id});
         q1.save();
 
-        q2.answers.push({text: "120L", group_id: group._id, user_id: user2._id});
+        q2.answers.push({text: "120L", group_id: group._id, user_id: user3._id});
         q2.save();
 
         test.teacher_id = user._id;

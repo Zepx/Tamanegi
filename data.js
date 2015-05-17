@@ -81,6 +81,18 @@ var questionSchema = mongoose.Schema({
 });
 
 questionSchema.methods.asJson = function(user) {
+    var unique = function(array) {
+        var u = {}, a = [];
+        for(var i = 0, l = array.length; i < l; ++i){
+            if(u.hasOwnProperty(array[i])) {
+                continue;
+            }
+            a.push(array[i]);
+            u[array[i]] = 1;
+        }
+        return a;
+    }
+
     var alternatives = [];
     var our = "";
     var gave_up = false;
@@ -97,8 +109,11 @@ questionSchema.methods.asJson = function(user) {
     }
 
     /* Not allowed to see alternatives too early! */
-    if (this.text == "" && !this.gave_up)
+    console.log("Our: " + our + ", gu: " + gave_up);
+    if (our == "" && !gave_up)
         alternatives = [];
+    else
+        alternatives = unique(alternatives);
 
     return {
         _id: this._id,
@@ -137,6 +152,7 @@ questionSchema.methods.answer = function(user, answer) {
         var a = this.answers[i];
         if (a.user_id + "" == user._id + "") {
             a.text = answer;
+            a.gave_up = true;
             this.save();
             return;
         }
