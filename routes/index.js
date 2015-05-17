@@ -47,7 +47,10 @@ function withQuestion(fn) {
     return withUser(function (user, req, res) {
         /* Check access! */
         db.Question.findOne({_id: req.query.id}, function(error, question) {
-            fn(user, question, req, res);
+            if (question !== null)
+                fn(user, question, req, res);
+            else
+                req.json({error: "Question does not exist"});
         });
     });
 }
