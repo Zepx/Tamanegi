@@ -271,7 +271,10 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
 });
 
 router.get('/loggedin', function(req, res) {
-   res.json(req.isAuthenticated());
+   if(req.isAuthenticated())
+      res.json({ isTeacher: req.user.teacher, status: true});
+   else
+      res.json({ status: false });
 })
 
 router.get('/logout', function(req, res) {

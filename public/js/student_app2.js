@@ -8,8 +8,8 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider){
 
       // Make an AJAX call to check if the user is logged in 
       $http.get('/loggedin').success(function(user){ // Authenticated 
-         if (user !== false ) 
-            deferred.resolve(); 
+         if (user.status !== false ) 
+            deferred.resolve(user, $location); 
          // Not Authenticated 
          else { 
             $rootScope.message = 'You need to log in.'; 
@@ -36,7 +36,8 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider){
     });
 
   // For any unmatched url, send to /route1
-  $urlRouterProvider.otherwise("/teacherhome/dashboard")
+  //$urlRouterProvider.otherwise("/teacherhome/dashboard")
+  $urlRouterProvider.otherwise("/studenthome")
   //$urlRouterProvider.otherwise("/dohomework")
 
   $stateProvider
@@ -52,7 +53,10 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider){
          css: 'http://getbootstrap.com/examples/signin/signin.css'
         }
     })
-  
+    .state('usertype', {
+         url: "/redirect",
+         controller: "RedirectCtrl"
+    })
     .state('teacherhome', {
         url: "/teacherhome",
         templateUrl: "views/homeTeacher.html",
