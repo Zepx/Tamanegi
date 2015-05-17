@@ -172,7 +172,7 @@ RESPONSE
     "title" : <title of the test>,
     "due" : <due-date, YYYY-MM-DD HH:MM:SS>,
     "teacher" : <name of the teacher giving the test>,
-    "questions" : [<id of question>, ...],
+    "questions" : [<content of question, as in /question>, ...],
 }
 
 /**
@@ -182,6 +182,7 @@ RESPONSE
 GET /question?id=<question id>
 RESPONSE
 {
+    "id" : <question id>,
     "text" : <question text>,
     "answer" : <the students previous answer (if any)>,
     "alternatives" : [ "alternative1", ... ],

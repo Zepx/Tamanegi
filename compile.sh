@@ -51,7 +51,7 @@ function reloadFirefox {
     # group=`durl -s "http://localhost:3000/groups" | sed 's/.*"\([0-9a-z]*\)".*:.*/\1/g'`
     # durl "http://localhost:3000/result?for="$user"&test="$test
     # durl "http://localhost:3000/result?group="$group"&test="$test
-    durl "http://localhost:3000/test?test="$test
+    durl -s "http://localhost:3000/test?test="$test
 
     # q='[{"text":"Question #1"}, {"text":"Question #2"}, {"text":"Question #3"}]';
     # testData='{"type":"test", "title":"From JSON", "group":"'$group'", "due":"2015-05-17 18:30:00", "teacher":"'$user'", "questions":'$q'}';

@@ -35,7 +35,10 @@ function withTest(fn) {
     return withUser(function(user, req, res) {
         /* Check access! */
         db.Test.findOne({_id: req.query.test}, function(error, test) {
-            fn(user, test, req, res);
+            if (test !== null)
+                fn(user, test, req, res);
+            else
+                req.json({error: "Test does not exist"});
         })
     });
 }
@@ -133,7 +136,9 @@ router.get('/dash', auth, withUser(function(user, req, res) {
 }));
 
 router.get('/test', auth, withTest(function(user, test, req, res) {
-    res.json(test);
+    test.asDeepJson(function(result) {
+        res.json(result);
+    });
 }));
 
 router.post('/create', withUser(function(user, req, res) {

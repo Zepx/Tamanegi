@@ -42,9 +42,30 @@ testSchema.methods.asJson = function() {
     return {
         title: this.title,
         due: this.due,
-        teacher: "unknown",
+        teacher: this.teacher_id,
         questions: this.questions_id,
     }
+}
+
+testSchema.methods.asDeepJson = function(cb) {
+    var self = this;
+    e.Question.find({_id: {$in: this.questions_id}}, function(error, questions) {
+        var qMap = {};
+        for (var i = 0; i < questions.length; i++)
+            qMap[questions[i]._id] = questions[i];
+
+        var q = [];
+        for (var i = 0; i < self.questions_id.length; i++) {
+            q.push(qMap[self.questions_id[i]]);
+        }
+
+        cb({
+            title: self.title,
+            due: self.due,
+            teacher: self.teacher_id,
+            questions: q,
+        });
+    });
 }
 
 e.Test = mongoose.model('Test', testSchema);
