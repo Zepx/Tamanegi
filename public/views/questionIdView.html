@@ -38,13 +38,13 @@
                 </div>
                 <!-- TODO: GET answers here -->
                 
-                <div class="container-fluid" ng-repeat="answer in " ng-show="showAnswer">
+                <div class="container-fluid" ng-repeat="answer in currentquestion.alternatives" ng-show="showAnswer">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Answer #1</h3>
+                            <h3 class="panel-title">Answer #{{$index+1}}</h3>
                         </div>
                         <div class="panel-body">
-                            It's time to grow up 'X'. Solve your problem. 
+                            {{answer}} 
                         </div>
                     </div>
                 </div>
