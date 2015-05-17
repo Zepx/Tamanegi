@@ -327,6 +327,7 @@ app.controller('AnswerSubmitController', ['$scope', '$http', function($scope, $h
       $http.post('/answer?id='+$scope.currentquestion.question_id, {answer_text: $scope.answertext}).success(function(data) {
           $scope.answerSubmited = true
           console.log(data);
+          $scope.currentquestion.alternatives = data.alternatives;
           // update alternatives in data.alternatives
       });
   };
@@ -338,6 +339,7 @@ app.controller('AnswerSubmitController', ['$scope', '$http', function($scope, $h
       $http.post('/give_up?id='+$scope.currentquestion.question_id).success(function(data) {
           $scope.showAnswer = true;//!$scope.showAnswer
           console.log(data);
+          $scope.currentquestion.alternatives = data.alternatives;
           // update alternatives in data.alternatives
       });
     //$scope.answertext = $scope.motherChecker
@@ -358,6 +360,7 @@ app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http
                 question_id: data.questions[0]._id,
                 question_order: 1,
                 question_text: data.questions[0].text,
+                alternatives: data.questions[0].alternatives;
             };
             $scope.answertext = data.questions[0].answer;
         });
@@ -368,7 +371,7 @@ app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http
                 question_id: parts[1],
                 question_order: parts[0],
                 question_text: data.text,
-                answer: data.answer,
+                alternatives: data.alternatives;
             };
             $scope.answertext = data.answer;
         });
