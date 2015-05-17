@@ -342,26 +342,28 @@ app.controller('AnswerSubmitController', ['$scope', function($scope) {
 }]);
 
 app.controller('questionWithIDViewController', ['$scope', '$stateParams', '$http', function($scope, $stateParams,$http) {
-    var parts = ($stateParams.itemId + "").split("-");
-    console.log($stateParams.itemId);
-    console.log(parts);
-    $http.get('/question?id='+parts[1]).success(function(data) {
-        $scope.currentquestion = {
-            question_id: $stateParams.itemId,
-            question_order: parts[0],
-            question_text: data.text,
-        };
-  });
-
-    
-//  $scope.currentquestion = {
-//    question_id : $stateParams.itemId,
-//    question_order: $stateParams.itemId,
-//    question_text: 'What is the future of the US-Saudi energy relationship?'
-//    };
- 
+    var item = $stateParams.itemId;
+    if (item == "" || item == undefined) {
+        $http.get('/test?test='+$stateParams.testId).success(function(data) {
+            $scope.currentquestion = {
+                question_id: data.questions[0]._id,
+                question_order: 1,
+                question_text: data.questions[0].text
+            };
+        });
+    } else {
+        var parts = (item + "").split("-");
+        $http.get('/question?id='+parts[1]).success(function(data) {
+            $scope.currentquestion = {
+                question_id: $stateParams.itemId,
+                question_order: parts[0],
+                question_text: data.text,
+            };
+        });
+    }
 }]);
 
+    
 app.controller('questionViewController', ['$scope', '$http', '$state', '$stateParams', function($scope,  $http, $state, $stateParams) {
     $http.get('/test?test='+$stateParams.testId).success(function(data) {
         var r = [];
@@ -370,6 +372,8 @@ app.controller('questionViewController', ['$scope', '$http', '$state', '$statePa
             r.push({q_link: l,
                     q_index: (i + 1), question_text: data.questions[i].text});
         }
+
+        $scope.firstQuestion = r[0].q_link;
         $scope.id = $stateParams.testId;
         $scope.questions = r;
   });
