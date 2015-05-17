@@ -6,6 +6,7 @@ then
 else
     echo "Starting mongodb..."
     mongod --dbpath ~/js/db --fork --syslog
+    sleep 3
 fi
 
 function durl {
